@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Styles related to this page can be included here or in the base template -->
+<style type="text/css">
+    /* Your CSS styles */
+    .comment {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    .comment-meta {
+        font-size: 0.8em;
+        color: #666;
+    }
+    .comment-body {
+        margin-top: 10px;
+    }
+</style>
+
+<div class="container">
+    <div class="blog-post">
+        <h1>{{ blog_post.title }}</h1>
+        {% if blog_post.image %}
+            <img src="{{ blog_post.image.url }}" alt="{{ blog_post.title }}">
+        {% endif %}
+        <p>{{ blog_post.body }}</p>
+    </div>
+
+    <div class="comments">
+        <h2>Comments</h2>
+        {% for comment in comments %}
+        <div class="comment">
+            <div class="comment-meta">
+                <strong>{{ comment.author.username }}</strong> on {{ comment.created_at|date:"F d, Y H:i" }}
+            </div>
+            <div class="comment-body">
+                <p>{{ comment.content }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p>No comments yet.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Comment Form -->
+    {% if user.is_authenticated %}
+    <div class="comment-form">
+        <h3>Add a Comment</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+    </div>
+    {% else %}
+    <p>You must be <a href="{% url 'account:login' %}">logged in</a> to post a comment.</p>
+    {% endif %}
+</div>
+
+{% endblock content %}
