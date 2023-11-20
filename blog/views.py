@@ -4,7 +4,12 @@ from django.http import HttpResponse
 from blog.models import BlogPost, Comment
 from blog.forms import CreateBlogPostForm, UpdateBlogPostForm, CommentForm
 from account.models import Account
+from quizzes.models import Quiz, Attempt
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+
+
 
 def create_blog_view(request):
     context = {}
@@ -15,27 +20,27 @@ def create_blog_view(request):
     form = CreateBlogPostForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         obj = form.save(commit=False)
-        author = Account.objects.filter(email=user.email).first()
-        obj.author = author
+        obj.author = user
         obj.save()
         form = CreateBlogPostForm()
 
     context['form'] = form
     return render(request, "blog/create_blog.html", context)
 
+
 def detail_blog_view(request, slug):
     context = {}
     blog_post = get_object_or_404(BlogPost, slug=slug)
-    comments = blog_post.comments.all()  # This will work with the new related_name 'comments'
+    comments = blog_post.comments.all()
 
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             new_comment = comment_form.save(commit=False)
-            new_comment.blog_post = blog_post  # Make sure 'blog_post' is the correct field name in your Comment model
+            new_comment.blog_post = blog_post
             new_comment.author = request.user
             new_comment.save()
-            return redirect('blog:detail', slug=slug)  # Adjust 'blog:detail' as needed
+            return redirect('blog:detail', slug=slug)
     else:
         comment_form = CommentForm()
 
@@ -86,4 +91,10 @@ def get_blog_queryset(query=None):
         for post in posts:
             queryset.append(post)
     return list(set(queryset))
+
+
+
+
+
+
 

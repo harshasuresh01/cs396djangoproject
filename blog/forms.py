@@ -1,6 +1,5 @@
 from django import forms
-from blog.models import Comment
-from blog.models import BlogPost
+from blog.models import BlogPost, Comment
 
 class CreateBlogPostForm(forms.ModelForm):
     class Meta:
@@ -24,13 +23,13 @@ class UpdateBlogPostForm(forms.ModelForm):
             blog_post.save()
         return blog_post
 
-
-
-
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['content',]
+        fields = ['content']
+
+
+
 
 
 

@@ -6,10 +6,11 @@ from account.models import Account
 
 class RegistrationForm(UserCreationForm):
 	email = forms.EmailField(max_length=60, help_text='Required. Add a valid email address')
+	is_teacher = forms.BooleanField(required=False, help_text='Check if registering as a teacher')
 
 	class Meta:
 		model = Account
-		fields = ("email", "username", "password1", "password2")
+		fields = ("email", "username", "password1", "password2", "is_teacher")
 
 
 

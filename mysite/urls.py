@@ -35,12 +35,13 @@ from account.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_screen_view, name="home"),
-    path('blog/', include('blog.urls', 'blog')),
+    path('blog/', include(('blog.urls', 'blog'), namespace='blog')),
     path('register/', registration_view, name="register"),
     path('logout/', logout_view, name="logout"),
     path('login/', login_view, name="login"),
     path('account/', account_view, name="account"),
     path('must_authenticate/', must_authenticate_view, name="must_authenticate"),
+    path('quizzes/', include(('quizzes.urls', 'quizzes'), namespace='quizzes')),
 
    
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='registration/password_change_done.html'), 
@@ -59,7 +60,7 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'),
      name='password_reset_complete'),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
